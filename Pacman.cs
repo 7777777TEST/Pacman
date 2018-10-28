@@ -23,7 +23,7 @@ namespace Pacman
 		//3: down
 		static void Main()
 		{
-			Init();
+			Console.Title="PACMAN";
 			Run();
 		}
 		static Data[] ReadScore(ref Score[] data)
@@ -105,9 +105,12 @@ namespace Pacman
 		}
 		static void Init()
 		{
+			isclear=false;
+			islarge=false;
+			ispowerful=false;
+			interval=0;
 			p.x=0;
 			p.y=5;
-			p.status=0;
 			ghosts=new Player[0];
 			cokie=new Player[0];
 			block=new string[]
@@ -156,124 +159,135 @@ namespace Pacman
 		static void Run()
 		{
 			Console.CursorVisible=false;
-			Console.Clear();
-			Stopwatch sw = new Stopwatch();
-			Stopwatch swforg = new Stopwatch();
-			sw.Start();
-			swforg.Start();
-			int counttimer=3;
-			while(counttimer>=0)
+			while(p.status==0)
 			{
-				if(sw.Elapsed.TotalSeconds>=1)
+				Init();
+				Console.Clear();
+				Stopwatch sw = new Stopwatch();
+				Stopwatch swforg = new Stopwatch();
+				sw.Start();
+				swforg.Start();
+				int counttimer=3;
+				while(counttimer>=0)
 				{
-					Console.SetCursorPosition(Console.WindowWidth/2-1,Console.WindowHeight/2);
-					Console.Write("{0}",counttimer);
-					counttimer--;
-					sw.Reset();
-					sw.Start();
-				}
-			}
-			Console.SetCursorPosition(Console.WindowWidth/2-1,Console.WindowHeight/2);
-			Console.Write("Go");
-			Console.SetCursorPosition(0,0);
-			for(int i=0;i<block.Length;i++)
-			{
-				Console.WriteLine(block[i]);
-			}
-			while(p.status==0 && !isclear)
-			{
-				if(Console.KeyAvailable)
-				{
-					switch(Console.ReadKey(true).Key)
+					if(sw.Elapsed.TotalSeconds>=1)
 					{
-						case ConsoleKey.UpArrow:
-							direction=2;
-							break;
-						case ConsoleKey.DownArrow:
-							direction=3;
-							break;
-						case ConsoleKey.LeftArrow:
-							direction=0;
-							break;
-						case ConsoleKey.RightArrow:
-							direction=1;
-							break;
-						case ConsoleKey.Escape:
-							Console.CursorVisible=true;
-							Environment.Exit(0);
-							break;
-						case ConsoleKey.Enter:
-							sw.Stop();
-							swforg.Stop();
-							Console.SetCursorPosition(Console.WindowWidth/2-3,Console.WindowHeight/2);
-							Console.Write("PAUSE");
-							Console.ReadKey(true);
-							sw.Start();
-							swforg.Start();
-							Console.SetCursorPosition(Console.WindowWidth/2-3,Console.WindowHeight/2);
-							Console.Write("     ");
-							break;
+						Console.SetCursorPosition(Console.WindowWidth/2-1,Console.WindowHeight/2);
+						Console.Write("{0}",counttimer);
+						counttimer--;
+						sw.Reset();
+						sw.Start();
 					}
 				}
-				if(sw.Elapsed.TotalSeconds>=0.2)
+				Console.SetCursorPosition(Console.WindowWidth/2-1,Console.WindowHeight/2);
+				Console.Write("Go");
+				Console.SetCursorPosition(0,0);
+				for(int i=0;i<block.Length;i++)
 				{
-					Update();
-					sw.Reset();
-					sw.Start();
+					Console.WriteLine(block[i]);
 				}
-				if(swforg.Elapsed.TotalSeconds>=ghostspeed)
+				while(!isclear&&p.status==0)
 				{
-					for(int i=0;i<ghosts.Length;i++)
+					if(Console.KeyAvailable)
 					{
-						Console.SetCursorPosition(ghosts[i].originx,ghosts[i].originy);
-						Console.Write("0");
-						Console.SetCursorPosition(ghosts[i].x,ghosts[i].y);
-						Console.Write(" ");
-						if(ghosts[i].status==0)
+						switch(Console.ReadKey(true).Key)
 						{
-							MoveGhost(ref ghosts[i]);
-							Console.SetCursorPosition(ghosts[i].x,ghosts[i].y);
-							if(ispowerful)
-								Console.ForegroundColor=ConsoleColor.Blue;
-							Console.Write("m");
-							Console.ForegroundColor=ConsoleColor.White;
-						}else
-						{
-							ghosts[i].variant[0]--;
-							if(ghosts[i].variant[0]<0)
-							{
-								ghosts[i].status=0;
-							}else
-							{
-								Console.SetCursorPosition(ghosts[i].originx,ghosts[i].originy);
-								Console.Write("M");
-							}
+							case ConsoleKey.UpArrow:
+								direction=2;
+								break;
+							case ConsoleKey.DownArrow:
+								direction=3;
+								break;
+							case ConsoleKey.LeftArrow:
+								direction=0;
+								break;
+							case ConsoleKey.RightArrow:
+								direction=1;
+								break;
+							case ConsoleKey.Escape:
+								Console.CursorVisible=true;
+								Environment.Exit(0);
+								break;
+							case ConsoleKey.Enter:
+								sw.Stop();
+								swforg.Stop();
+								Console.SetCursorPosition(Console.WindowWidth/2-3,Console.WindowHeight/2);
+								Console.Write("PAUSE");
+								Console.ReadKey(true);
+								sw.Start();
+								swforg.Start();
+								Console.SetCursorPosition(Console.WindowWidth/2-3,Console.WindowHeight/2);
+								Console.Write("     ");
+								break;
 						}
 					}
-					Check();
-					swforg.Reset();
-					swforg.Start();
+					if(sw.Elapsed.TotalSeconds>=0.2)
+					{
+						Update();
+						sw.Reset();
+						sw.Start();
+					}
+					if(swforg.Elapsed.TotalSeconds>=ghostspeed)
+					{
+						for(int i=0;i<ghosts.Length;i++)
+						{
+							Console.SetCursorPosition(ghosts[i].originx,ghosts[i].originy);
+							Console.Write("0");
+							Console.SetCursorPosition(ghosts[i].x,ghosts[i].y);
+							Console.Write(" ");
+							if(ghosts[i].status==0)
+							{
+								MoveGhost(ref ghosts[i]);
+								Console.SetCursorPosition(ghosts[i].x,ghosts[i].y);
+								if(ispowerful)
+									Console.ForegroundColor=ConsoleColor.Blue;
+								Console.Write("m");
+								Console.ForegroundColor=ConsoleColor.White;
+							}else
+							{
+								ghosts[i].variant[0]--;
+								if(ghosts[i].variant[0]<0)
+								{
+									ghosts[i].status=0;
+								}else
+								{
+									Console.SetCursorPosition(ghosts[i].originx,ghosts[i].originy);
+									Console.Write("M");
+								}
+							}
+						}
+						Check();
+						swforg.Reset();
+						swforg.Start();
+					}
+				}
+				if(isclear)
+				{
+					Console.Clear();
+					Console.SetCursorPosition(Console.WindowWidth/2-3,Console.WindowHeight/2);
+					Console.Write("CLEAR!!");
+					Console.ReadKey();
+					Score+=50;
 				}
 			}
 			Console.Clear();
 			Console.SetCursorPosition(Console.WindowWidth/2-3,Console.WindowHeight/2);
-			if(!isclear)
-				Console.Write("GAME OVER");
-			else
-			{
-				Console.Write("CLEAR!!");
-				Score+=50;
-			}
+			Console.Write("GAME OVER");
 			Console.ReadKey();
 			SaveScore();
 			Score[] score=null;
 			ReadScore(ref score);
+			Console.SetCursorPosition(1,0);
+			Console.Write("Your Score: {0}",Score);
 			for(int i=0;i<score.Length;i++)
 			{
-				if(i>10)
+				if(i>Console.WindowHeight-3)
 					break;
-				Console.SetCursorPosition(1,Console.WindowHeight/2+i-5);
+				Console.SetCursorPosition(1,i+3);
+				if(score[i].score==Score)
+					Console.ForegroundColor=ConsoleColor.Yellow;
 				Console.Write("{0}: {1}",i+1,score[i].score);
+				Console.ForegroundColor=ConsoleColor.White;
 			}
 			Console.ReadKey();
 			Console.CursorVisible=true;
@@ -292,6 +306,14 @@ namespace Pacman
 				Console.Write("c");
 			}
 			Check();
+			if(interval>0)
+			{
+				interval--;
+			}else if(interval==0)
+			{
+				ispowerful=false;
+				ghostspeed=0.19;
+			}
 			islarge=!islarge;
 		}
 		static void Move()
@@ -395,10 +417,10 @@ namespace Pacman
 					{
 						ispowerful=true;
 						ghostspeed=0.4;
+						interval+=100;
 					}
 					Score++;
 					cokie[i].status=2;
-					interval+=10;
 				}
 				if(cokie[i].status==2)
 				{
@@ -408,14 +430,6 @@ namespace Pacman
 			if(eatencokie==0)
 			{
 				isclear=true;
-			}
-			if(interval>0)
-			{
-				interval--;
-			}else if(interval==0)
-			{
-				ispowerful=false;
-				ghostspeed=0.19;
 			}
 		}
 		private static bool moveGohst(ref Player g,int h)
@@ -646,6 +660,7 @@ namespace Pacman
 	public class Score : System.IComparable
 	{
 		public uint score;
+		public string name;
 		public int CompareTo(object obj)
 		{
 			return this.score.CompareTo(((Score)obj).score);
