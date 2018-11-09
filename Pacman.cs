@@ -24,7 +24,31 @@ namespace Pacman
 		static void Main()
 		{
 			Console.Title="PACMAN";
+			Title();
 			Run();
+		}
+		static void Title()
+		{
+				Console.CursorVisible=false;
+				Console.Clear();
+				Console.ForegroundColor=ConsoleColor.Yellow;
+				Console.Write("    +----+  +----+   +----+  +       +   +----+  +    +\n");
+				Console.Write("    |    |  |    |   |    |  |+     +|   |    |  |+   |\n");
+				Console.Write("    |    |  |    |   |       | +   + |   |    |  | +  |\n");
+				Console.Write("    +----+  +----+   |       |  + +  |   +----+  |  + |\n");
+				Console.Write("    |       |    |   |    |  |   +   |   |    |  |   +|\n");
+				Console.Write("    |       |    |   +----+  |       |   |    |  |    +\n");
+				Console.ForegroundColor=ConsoleColor.White;
+				Stopwatch sw = new Stopwatch();
+				sw.Start();
+				while(true)
+				{
+					if(sw.Elapsed.TotalSeconds>=5)
+					{
+						break;
+					}
+				}
+				Console.Clear();
 		}
 		static Data[] ReadScore(ref Score[] data)
 		{
@@ -115,7 +139,7 @@ namespace Pacman
 			cokie=new Player[0];
 			block=new string[]
 			{
-					"#####################",
+				"#####################",
 					"#. . . . . . . . . .#",
 					"# ### ######### ### #",
 					"#   #*# m # m #*#   #",
@@ -159,6 +183,7 @@ namespace Pacman
 		static void Run()
 		{
 			Console.CursorVisible=false;
+			int stage=1;
 			while(p.status==0)
 			{
 				Init();
@@ -167,11 +192,14 @@ namespace Pacman
 				Stopwatch swforg = new Stopwatch();
 				sw.Start();
 				swforg.Start();
-				int counttimer=3;
+				Console.SetCursorPosition(Console.WindowWidth/2-3,Console.WindowHeight/2);
+				Console.Write("level {0}",stage);
+				int counttimer=4;
 				while(counttimer>=0)
 				{
 					if(sw.Elapsed.TotalSeconds>=1)
 					{
+						Console.Clear();
 						Console.SetCursorPosition(Console.WindowWidth/2-1,Console.WindowHeight/2);
 						Console.Write("{0}",counttimer);
 						counttimer--;
@@ -268,6 +296,7 @@ namespace Pacman
 					Console.Write("CLEAR!!");
 					Console.ReadKey();
 					Score+=50;
+					stage++;
 				}
 			}
 			Console.Clear();
@@ -298,6 +327,7 @@ namespace Pacman
 			Console.Write(" ");
 			Move();
 			Console.SetCursorPosition(p.x,p.y);
+			Console.ForegroundColor=ConsoleColor.Yellow;
 			if(islarge)
 			{
 				Console.Write("C");
@@ -305,6 +335,7 @@ namespace Pacman
 			{
 				Console.Write("c");
 			}
+			Console.ForegroundColor=ConsoleColor.White;
 			Check();
 			if(interval>0)
 			{
