@@ -13,7 +13,7 @@ namespace Pacman
 		static string[] block;
 		static int direction=1;
 		static double ghostspeed=0.19;
-		private static int interval=0;
+		private static int interval=0,powerfultime=100,deathtime=20;
 		private static bool islarge=false,isclear=false;
 		public static bool ispowerful=false;
 		public static uint Score=0;
@@ -296,6 +296,14 @@ namespace Pacman
 					Console.Write("CLEAR!!");
 					Console.ReadKey();
 					Score+=50;
+					if(powerfultime>25)
+					{
+						powerfultime-=10;
+					}
+					if(deathtime>15)
+					{
+						deathtime--;
+					}
 					stage++;
 				}
 			}
@@ -425,7 +433,7 @@ namespace Pacman
 						ghosts[i].x=ghosts[i].originx;
 						ghosts[i].y=ghosts[i].originy;
 						ghosts[i].variant=new int[1];
-						ghosts[i].variant[0]=20;
+						ghosts[i].variant[0]=deathtime;
 						Score+=10;
 					}else
 					{
@@ -448,7 +456,7 @@ namespace Pacman
 					{
 						ispowerful=true;
 						ghostspeed=0.4;
-						interval+=100;
+						interval+=powerfultime;
 					}
 					Score++;
 					cokie[i].status=2;
